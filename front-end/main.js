@@ -26,6 +26,6 @@ function onAddItem(item) {
 
 function onEditItem(item) {
     const index = list.lastIndexOf(item);
-    list[index] = editedItem;
+    list[index] = item;
     renderShoppingList(list);
 }
