@@ -96,6 +96,7 @@ export function renderApp(rootNode, onDeleteItem, onAddItem, onChangeItem) {
             shoppingList[editedItemIndex].content = content;
 
             onChangeItem(shoppingList[editedItemIndex], renderEditedItem);
+            editedItemIndex = null
         }
 
         if (e.target.classList.contains("delete")) {
