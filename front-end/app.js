@@ -2,7 +2,7 @@ function renderItem(item, index) {
     return `
     <div data-index="${index}" class="item ${item.completed ? "checked" : ""}">
         <input type="checkbox" ${item.completed ? "checked" : ""}>
-        <p>${item.content}</p>
+        <p>${item[0]} ${item[1] > 1 ? `(${item[1]})` : ""}</p>
         ${!item.completed ? `<button class="edit">Edytuj</button>` : ""}
         <button class="delete">Usuń</button>
     </div>
@@ -16,6 +16,20 @@ function renderEditItem(item) {
 `;
 }
 
+function groupItems(list) {
+    const result = {};
+
+    list.forEach(({ content }) => {
+        if (result[content]) {
+            result[content] = result[content] + 1;
+        } else {
+            result[content] = 1;
+        }
+    });
+
+    return Object.entries(result);
+}
+
 export function renderApp(rootNode, onDeleteItem, onAddItem, onChangeItem) {
     let shoppingList;
 
@@ -25,7 +39,17 @@ export function renderApp(rootNode, onDeleteItem, onAddItem, onChangeItem) {
             <div>
                 <h1>Lista zakupów</h1>
                 <div id="add-row">
-                    <input type="text" placeholder="Dodaj zakup"/>
+                    <div id="input-row">
+                        <div id="loader" class="hidden"></div> 
+                        <input type="text" placeholder="Dodaj zakup"/>
+                        <div id="suggestion-box" class="hidden">
+                            <ul>
+                                <li><b>Mak</b>aron Spaghetti Lubella</li>
+                                <li><b>Mak</b>aron świderki Barilla</li>
+                                <li><b>Mak</b>aron tagiatelle Barilla</li>
+                            </ul>
+                        </div>
+                    </div>
                     <button class="add">Dodaj</button>
                 </div>
             </div>
@@ -40,7 +64,7 @@ export function renderApp(rootNode, onDeleteItem, onAddItem, onChangeItem) {
     function renderShoppingList(items) {
         shoppingList = items;
         rootNode.querySelector("#shopping-list").innerHTML = items.length
-            ? items.map(renderItem).join("")
+            ? groupItems(items).map(renderItem).join("")
             : `<p class="empty">Lista pusta 🎉</p>`;
     }
 
@@ -96,7 +120,7 @@ export function renderApp(rootNode, onDeleteItem, onAddItem, onChangeItem) {
             shoppingList[editedItemIndex].content = content;
 
             onChangeItem(shoppingList[editedItemIndex], renderEditedItem);
-            editedItemIndex = null
+            editedItemIndex = null;
         }
 
         if (e.target.classList.contains("delete")) {
@@ -116,6 +140,31 @@ export function renderApp(rootNode, onDeleteItem, onAddItem, onChangeItem) {
             shoppingList[editedItemIndex].completed = e.target.checked;
 
             onChangeItem(shoppingList[editedItemIndex], renderEditedItem);
+        }
+    });
+
+    if (localStorage["autocomplete"]) {
+        rootNode.addEventListener("input", (e) => {
+            if (e.target.value.length >= 3) {
+                const parentNode = e.target.parentNode;
+
+                const loader = parentNode.querySelector("#loader");
+                loader.classList.remove("hidden");
+
+                setTimeout(() => {
+                    loader.classList.add("hidden");
+                    parentNode
+                        .querySelector("#suggestion-box")
+                        .classList.remove("hidden");
+                }, 750);
+            }
+        });
+    }
+
+    rootNode.querySelector("#suggestion-box").addEventListener("click", (e) => {
+        if (e.target.tagName === "LI") {
+            rootNode.querySelector("input").value = e.target.textContent;
+            rootNode.querySelector("#suggestion-box").classList.add("hidden");
         }
     });
 

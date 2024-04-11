@@ -5,7 +5,7 @@
 
     color-scheme: light dark;
     color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
+    background-color: #16181f;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -16,6 +16,72 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#input-row {
+    position: relative;
+    flex: 1;
+    display: flex;
+}
+
+#loader {
+    width: 30px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(farthest-side, #000202 94%, #0000) top/8px 8px
+            no-repeat,
+        conic-gradient(#0000 30%, #041828);
+    -webkit-mask: radial-gradient(
+        farthest-side,
+        #0000 calc(100% - 8px),
+        #000 0
+    );
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    animation: l13 1s infinite linear;
+}
+@keyframes l13 {
+    100% {
+        transform: rotate(1turn);
+    }
+}
+
+#loader.hidden {
+    display: none;
+}
+
+#suggestion-box {
+    position: absolute;
+    top: 2rem;
+    background-color: white;
+    border-top: none;
+    border: 1px solid #80808054;
+    border-radius: 10px;
+    border-top: none;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#suggestion-box ul {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: left;
+    padding: 0.5rem;
+}
+
+#suggestion-box ul li {
+    list-style: none;
+    cursor: pointer;
+}
+
+#suggestion-box.hidden {
+    display: none;
 }
 
 a {
@@ -56,14 +122,15 @@ h1 {
 #add-row {
     margin: 1rem 0;
     padding-bottom: 1rem;
+    gap: 0.5rem;
     border-bottom: 1px solid #80808054;
     display: flex;
+    justify-content: center;
 }
 
 #add-row input {
     flex: 1;
     font-size: 16px;
-    margin-right: 1rem;
     padding: 0.5rem;
     border: 1px solid #80808054;
     border-radius: 10px;
@@ -127,7 +194,7 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
     :root {
         color: #213547;
-        background-color: #ffffff;
+        background-color: #16181f;
     }
     a:hover {
         color: #747bff;
